@@ -1,47 +1,56 @@
-public class Main {
-    static int dir[][]={{-1,-1},{1,1},{-1,0},{1,0},{0,-1},{0,1},{-1,1},{1,-1}};
+import java.math.*;
+import java.util.*;
+public class test2 {
     public static void main(String[] args) {
-        Scanner sc=new Scanner(System.in);
-        long ct=0;
-        ArrayList<char[]>grid=new ArrayList<>();
+// int lc=0;
+        BigInteger ct=new BigInteger("0");
         try{
+            Scanner sc=new Scanner(System.in);
             while(true){
-                char tmp[]=sc.nextLine().toCharArray();
-                grid.add(tmp);
+                int ind=-1,max=-1,sm=-1;
+                String s=sc.nextLine();
+                int n=s.length();
+                String maxs=remd(s,s.length()-12);
+                //helper(0,"0",12,s,maxs);
+                BigInteger cur=new BigInteger(maxs);
+		// System.out.println("line:"+(lc++)+" done");
+                ct=ct.add(cur);
             }
         }
         catch(Exception e){
             System.out.println(e);
         }
         finally{
-            int cnt[];
-            do{
-                grid=helper(grid,cnt=new int[]{-1});
-                if(cnt[0]!=-1)ct+=cnt[0];
-            }while(cnt[0]!=-1);
-            System.out.println(ct);
+            System.out.println(ct.toString());
         }
     }
-    public static boolean isV(int i,int j,ArrayList<char[]>grid){
-        int m=grid.size(),n=grid.get(0).length;
-        if(i<0||j<0||i>=m||j>=n)return false;
-        return grid.get(i)[j]=='@';
+    public static void helper(int i,String sum,int picks,String s,String max[]){
+        if(i==s.length()||picks<=0){
+            if(picks==0)max[0]=(max[0].compareTo(sum)<0)?sum:max[0];
+            return;
+        }
+        helper(i+1,sum,picks,s,max);
+        StringBuilder tmp=new StringBuilder(sum);
+        tmp.append(s.charAt(i));
+        helper(i+1,tmp.toString(),picks-1,s,max);
     }
-    public static ArrayList<char[]> helper(ArrayList<char[]>grid,int cnt[]){
-        int n=grid.size(),m=grid.get(0).length,ct=0;
-        ArrayList<char[]>grid2=new ArrayList<>();
-        for(char g[]:grid)grid2.add(g.clone());
-        for(int i=0;i<n;i++){
-                for(int j=0;j<m;j++){
-                    int tct=0;
-                    if(grid.get(i)[j]!='@')continue;
-                    for(int d[]:dir){
-                        if(isV(i+d[0],j+d[1],grid)){tct++;}
-                    }
-                    if(tct<4){grid2.get(i)[j]='.';ct++;}
-                }
+public static String remd(String num, int k) {
+        int n=num.length();
+        char st[]=new char[n];int c=-1;
+       for(int i=0;i<n;i++){
+        if(c==-1)st[++c]=num.charAt(i);
+        else{
+            if(k<=0)st[++c]=num.charAt(i);
+            else{
+                while(c!=-1&&num.charAt(i)>st[c]&&k>0){c--;k--;}
+                st[++c]=num.charAt(i);
             }
-        if(ct!=0)cnt[0]=ct;
-        return grid2;
+        }
+       }
+       int i=0;
+       while(i<c&&st[i]=='0')i++;
+        while(k-->0)c--;
+        if(c-i+1<=0)return "0";
+        return new String(st,i,c+1-i);
     }
 }
